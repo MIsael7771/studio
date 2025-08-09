@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
 export const metadata: Metadata = {
   title: 'El jugos',
-  description: 'Calculadora de ventas semanales',
+  description: 'Calcula tus ganancia',
 };
 
 export default function RootLayout({

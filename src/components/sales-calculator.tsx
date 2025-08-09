@@ -158,7 +158,7 @@ export default function SalesCalculator() {
              </div>
              <CardTitle className="text-4xl font-extrabold text-primary tracking-tight">El jugos</CardTitle>
           </div>
-          <CardDescription className="text-base">Calcula tus ganancias semanales de forma sencilla e intuitiva.</CardDescription>
+          <CardDescription className="text-base">Calcula tus ganancia</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex justify-center md:justify-end items-center gap-4 mb-4">
