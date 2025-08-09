@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { format } from 'date-fns';
+import { format, startOfWeek, addDays, getWeekOfMonth, startOfMonth } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 
@@ -28,7 +28,7 @@ interface DaySales {
 }
 
 const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-const dayNameToIndex: { [key: string]: number } = { 'Domingo': 0, 'Lunes': 1, 'Martes': 2, 'Miércoles': 3, 'Jueves': 4, 'Viernes': 5, 'Sábado': 6 };
+const dayNameToIndex: { [key: string]: number } = { 'Lunes': 0, 'Martes': 1, 'Miércoles': 2, 'Jueves': 3, 'Viernes': 4, 'Sábado': 5, 'Domingo': 6 };
 
 
 export default function SalesCalculator() {
@@ -77,7 +77,14 @@ export default function SalesCalculator() {
     const dayName = daysOfWeek[dayIndex];
     setActiveTab(dayName);
   };
-
+  
+  const handleTabChange = (dayName: string) => {
+    setActiveTab(dayName);
+    const dayIndex = dayNameToIndex[dayName];
+    const startOfSelectedWeek = startOfWeek(selectedDate, { weekStartsOn: 1 });
+    const newSelectedDate = addDays(startOfSelectedWeek, dayIndex);
+    setSelectedDate(newSelectedDate);
+  };
 
   const handleInputChange = (dayIndex: number, prodIndex: number, field: keyof Omit<Product, 'id'>, value: string) => {
     const newDays = [...days];
@@ -117,6 +124,12 @@ export default function SalesCalculator() {
       return weekAcc + dayTotal;
     }, 0);
   }, [days]);
+
+  const weekOfMonth = useMemo(() => {
+    if (!selectedDate) return 0;
+    return getWeekOfMonth(selectedDate, { weekStartsOn: 1 });
+  }, [selectedDate]);
+
 
   if (!isMounted) {
     return (
@@ -170,10 +183,13 @@ export default function SalesCalculator() {
                    initialFocus
                    locale={es}
                  />
+                 <div className="p-2 text-center text-sm text-muted-foreground">
+                    Semana del mes: <span className="font-bold text-foreground">{weekOfMonth}</span>
+                 </div>
                </PopoverContent>
              </Popover>
           </div>
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
             <TabsList className="grid w-full grid-cols-3 sm:grid-cols-4 md:grid-cols-7 mb-4 h-auto p-1.5">
               {days.map((day) => {
                   const dailyTotal = day.products.reduce((acc, prod) => {
