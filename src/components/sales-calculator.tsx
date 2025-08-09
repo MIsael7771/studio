@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { PlusCircle, Trash2, TrendingUp } from 'lucide-react';
+import { PlusCircle, Trash2, Utensils } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -123,7 +123,7 @@ export default function SalesCalculator() {
         <CardHeader className="text-center md:text-left">
           <div className="flex items-center justify-center md:justify-start gap-3">
              <div className="bg-primary/10 p-2 rounded-lg">
-                <TrendingUp className="h-8 w-8 text-primary" />
+                <Utensils className="h-8 w-8 text-primary" />
              </div>
              <CardTitle className="text-4xl font-extrabold text-primary tracking-tight">VentaClara</CardTitle>
           </div>
