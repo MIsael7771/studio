@@ -164,9 +164,9 @@ export default function SalesCalculator() {
              <div className="bg-primary/10 p-2 rounded-lg">
                 <Utensils className="h-8 w-8 text-primary" />
              </div>
-             <CardTitle className="text-4xl font-extrabold text-primary tracking-tight">El jugos</CardTitle>
+             <CardTitle className="text-4xl font-extrabold text-primary tracking-tight">EL JUGOS</CardTitle>
           </div>
-          <CardDescription className="text-base">Calcula tus ganancia</CardDescription>
+          <CardDescription className="text-base">Calcula tus Ganancias</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex justify-center md:justify-end items-center gap-4 mb-4">
@@ -223,7 +223,7 @@ export default function SalesCalculator() {
                       const productTotal = (parseFloat(prod.price) || 0) * (parseFloat(prod.quantity) || 0);
                       return (
                         <div key={prod.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end p-4 rounded-lg bg-card md:bg-secondary/30 border">
-                           <div className="md:col-span-5 space-y-1.5">
+                           <div className="md:col-span-4 space-y-1.5">
                               <Label htmlFor={`name-${prod.id}`}>Producto</Label>
                               <Input
                                 id={`name-${prod.id}`}
@@ -232,48 +232,46 @@ export default function SalesCalculator() {
                                 onChange={(e) => handleInputChange(dayIndex, prodIndex, 'name', e.target.value)}
                               />
                            </div>
-                           <div className="grid grid-cols-2 gap-4 md:col-span-5">
-                             <div className="space-y-1.5">
-                               <Label htmlFor={`price-${prod.id}`}>Precio</Label>
-                               <Input
-                                 id={`price-${prod.id}`}
-                                 type="text"
-                                 inputMode="decimal"
-                                 placeholder="Precio"
-                                 value={prod.price}
-                                 onChange={(e) => handleInputChange(dayIndex, prodIndex, 'price', e.target.value)}
-                                 className="text-right"
-                               />
-                             </div>
-                              <div className="space-y-1.5">
-                                <Label htmlFor={`quantity-${prod.id}`}>Cantidad</Label>
-                                <div className="flex items-center gap-2">
-                                    <Button variant="outline" size="icon" className="h-10 w-10" onClick={() => handleQuantityChange(dayIndex, prodIndex, -1)}>
-                                        <MinusCircle className="h-5 w-5" />
-                                    </Button>
-                                    <Input
-                                      id={`quantity-${prod.id}`}
-                                      type="text"
-                                      inputMode="decimal"
-                                      placeholder="Cant."
-                                      value={prod.quantity}
-                                      onChange={(e) => handleInputChange(dayIndex, prodIndex, 'quantity', e.target.value)}
-                                      className="text-right"
-                                    />
-                                    <Button variant="outline" size="icon" className="h-10 w-10" onClick={() => handleQuantityChange(dayIndex, prodIndex, 1)}>
-                                        <PlusCircle className="h-5 w-5" />
-                                    </Button>
-                                </div>
+                           <div className="md:col-span-2 space-y-1.5">
+                             <Label htmlFor={`price-${prod.id}`}>Precio</Label>
+                             <Input
+                               id={`price-${prod.id}`}
+                               type="text"
+                               inputMode="decimal"
+                               placeholder="Precio"
+                               value={prod.price}
+                               onChange={(e) => handleInputChange(dayIndex, prodIndex, 'price', e.target.value)}
+                               className="text-right h-12"
+                             />
+                           </div>
+                           <div className="md:col-span-4 space-y-1.5">
+                              <Label htmlFor={`quantity-${prod.id}`}>Cantidad</Label>
+                              <div className="flex items-center gap-2">
+                                  <Button variant="outline" size="icon" className="h-12 w-12" onClick={() => handleQuantityChange(dayIndex, prodIndex, -1)}>
+                                      <MinusCircle className="h-6 w-6" />
+                                  </Button>
+                                  <Input
+                                    id={`quantity-${prod.id}`}
+                                    type="text"
+                                    inputMode="decimal"
+                                    placeholder="Cant."
+                                    value={prod.quantity}
+                                    onChange={(e) => handleInputChange(dayIndex, prodIndex, 'quantity', e.target.value)}
+                                    className="text-center h-12 text-lg font-bold"
+                                  />
+                                  <Button variant="outline" size="icon" className="h-12 w-12" onClick={() => handleQuantityChange(dayIndex, prodIndex, 1)}>
+                                      <PlusCircle className="h-6 w-6" />
+                                  </Button>
                               </div>
                            </div>
                            <div className="md:col-span-2 flex justify-between items-end">
                             <div className="text-right flex-grow space-y-1.5">
                                 <Label className="text-muted-foreground">Total</Label>
-                                <p className="text-right font-bold text-lg text-accent h-10 flex items-center justify-end">
+                                <p className="text-right font-bold text-lg text-accent h-12 flex items-center justify-end">
                                   {formatCurrency(productTotal)}
                                 </p>
                             </div>
-                            <Button variant="ghost" size="icon" onClick={() => removeProduct(dayIndex, prod.id)} className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 ml-2">
+                            <Button variant="ghost" size="icon" onClick={() => removeProduct(dayIndex, prod.id)} className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 ml-2 h-12 w-12">
                                 <Trash2 className="h-5 w-5" />
                                 <span className="sr-only">Eliminar producto</span>
                             </Button>

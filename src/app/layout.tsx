@@ -7,8 +7,8 @@ import { cn } from '@/lib/utils';
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
 export const metadata: Metadata = {
-  title: 'El jugos',
-  description: 'Calcula tus ganancia',
+  title: 'EL JUGOS',
+  description: 'Calcula tus Ganancias',
 };
 
 export default function RootLayout({
