@@ -2,14 +2,14 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { PlusCircle, Trash2 } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { PlusCircle, Trash2, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 
-// State interfaces
 interface Product {
   id: string;
   name: string;
@@ -27,6 +27,7 @@ const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sába
 export default function SalesCalculator() {
   const [days, setDays] = useState<DaySales[]>([]);
   const [isMounted, setIsMounted] = useState(false);
+  const [activeTab, setActiveTab] = useState(daysOfWeek[0]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -49,6 +50,9 @@ export default function SalesCalculator() {
       }));
       setDays(initialClientDays);
     }
+
+    const today = daysOfWeek[new Date().getDay() -1] || 'Domingo';
+    setActiveTab(today);
   }, []);
 
   useEffect(() => {
@@ -82,7 +86,7 @@ export default function SalesCalculator() {
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(amount);
+    return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(amount);
   };
 
   const weeklyTotal = useMemo(() => {
@@ -98,110 +102,126 @@ export default function SalesCalculator() {
 
   if (!isMounted) {
     return (
-        <Card className="w-full max-w-5xl mx-auto shadow-lg">
-            <CardHeader>
-                <Skeleton className="h-10 w-48" />
-                <Skeleton className="h-4 w-72" />
-            </CardHeader>
-            <CardContent className="space-y-2">
-                {daysOfWeek.map(day => <Skeleton key={day} className="h-20 w-full" />)}
-            </CardContent>
-            <CardFooter className="flex justify-end items-center bg-accent/10 p-6 rounded-b-lg">
-                <Skeleton className="h-8 w-32 mr-4" />
-                <Skeleton className="h-10 w-40" />
-            </CardFooter>
-        </Card>
+      <div className="w-full max-w-4xl mx-auto p-4 md:p-6">
+        <Skeleton className="h-10 w-48 mb-2" />
+        <Skeleton className="h-4 w-72 mb-8" />
+        <div className="space-y-4">
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-40 w-full" />
+        </div>
+        <div className="flex justify-end items-center mt-8 p-6 rounded-lg bg-gray-100">
+            <Skeleton className="h-8 w-32 mr-4" />
+            <Skeleton className="h-10 w-40" />
+        </div>
+      </div>
     );
   }
 
   return (
-    <Card className="w-full max-w-5xl mx-auto shadow-lg border-2 border-primary/20">
-      <CardHeader>
-        <CardTitle className="text-4xl font-headline text-primary">VentaClara</CardTitle>
-        <CardDescription>Calcula tus ganancias semanales de forma sencilla.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Accordion type="multiple" defaultValue={['day-0']} className="w-full space-y-2">
-          {days.map((day, dayIndex) => {
-            const dailyTotal = day.products.reduce((acc, prod) => {
-              const price = parseFloat(prod.price) || 0;
-              const quantity = parseFloat(prod.quantity) || 0;
-              return acc + (price * quantity);
-            }, 0);
+    <div className="w-full max-w-4xl mx-auto p-2 sm:p-4 md:p-6">
+      <Card className="w-full border-0 md:border md:shadow-lg">
+        <CardHeader className="text-center md:text-left">
+          <div className="flex items-center justify-center md:justify-start gap-3">
+             <div className="bg-primary/10 p-2 rounded-lg">
+                <TrendingUp className="h-8 w-8 text-primary" />
+             </div>
+             <CardTitle className="text-4xl font-extrabold text-primary tracking-tight">VentaClara</CardTitle>
+          </div>
+          <CardDescription className="text-base">Calcula tus ganancias semanales de forma sencilla e intuitiva.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-3 sm:grid-cols-4 md:grid-cols-7 mb-4 h-auto p-1.5">
+              {days.map((day) => {
+                  const dailyTotal = day.products.reduce((acc, prod) => {
+                    const price = parseFloat(prod.price) || 0;
+                    const quantity = parseFloat(prod.quantity) || 0;
+                    return acc + (price * quantity);
+                  }, 0);
+                return (
+                  <TabsTrigger key={day.dayName} value={day.dayName} className="flex-col h-14">
+                      <span className="font-semibold">{day.dayName}</span>
+                      <span className={cn("text-sm font-bold mt-1", dailyTotal > 0 ? 'text-accent' : 'text-muted-foreground/80')}>
+                        {formatCurrency(dailyTotal)}
+                      </span>
+                  </TabsTrigger>
+                )
+              })}
+            </TabsList>
 
-            return (
-              <AccordionItem value={`day-${dayIndex}`} key={day.dayName} className="border border-border rounded-lg bg-card shadow-sm">
-                <AccordionTrigger className="px-4 hover:no-underline rounded-t-lg data-[state=open]:bg-primary/10">
-                  <div className="flex justify-between w-full items-center">
-                    <span className="text-lg font-medium font-headline">{day.dayName}</span>
-                    <span className={cn("text-lg font-bold transition-colors duration-300", dailyTotal > 0 ? 'text-accent' : 'text-muted-foreground')}>
-                      {formatCurrency(dailyTotal)}
-                    </span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="p-4 border-t border-border">
-                  <div className="hidden md:grid md:grid-cols-[1fr_120px_120px_120px_40px] gap-4 items-center mb-2 px-2 text-sm font-semibold text-muted-foreground">
-                    <span>Producto</span>
-                    <span className="text-right">Precio</span>
-                    <span className="text-right">Cantidad</span>
-                    <span className="text-right">Total</span>
-                    <span></span>
-                  </div>
-                  <div className="space-y-4">
+            {days.map((day, dayIndex) => (
+              <TabsContent key={day.dayName} value={day.dayName}>
+                 <div className="space-y-4 pt-4">
                     {day.products.map((prod, prodIndex) => {
                       const productTotal = (parseFloat(prod.price) || 0) * (parseFloat(prod.quantity) || 0);
                       return (
-                        <div key={prod.id} className="grid grid-cols-1 md:grid-cols-[1fr_120px_120px_120px_40px] gap-2 md:gap-4 items-center p-2 rounded-md hover:bg-primary/5">
-                          <Input
-                            placeholder="Nombre del producto"
-                            value={prod.name}
-                            onChange={(e) => handleInputChange(dayIndex, prodIndex, 'name', e.target.value)}
-                          />
-                          <Input
-                            type="text"
-                            inputMode="decimal"
-                            placeholder="Precio"
-                            aria-label="Precio"
-                            value={prod.price}
-                            onChange={(e) => handleInputChange(dayIndex, prodIndex, 'price', e.target.value)}
-                            className="text-right"
-                          />
-                          <Input
-                            type="text"
-                            inputMode="decimal"
-                            placeholder="Cantidad"
-                            aria-label="Cantidad"
-                            value={prod.quantity}
-                            onChange={(e) => handleInputChange(dayIndex, prodIndex, 'quantity', e.target.value)}
-                            className="text-right"
-                          />
-                          <span className="text-right font-medium transition-colors text-accent h-10 flex items-center justify-end">
-                            {formatCurrency(productTotal)}
-                          </span>
-                          <Button variant="ghost" size="icon" onClick={() => removeProduct(dayIndex, prod.id)} className="text-muted-foreground hover:text-destructive h-8 w-8 justify-self-center md:justify-self-end">
-                            <Trash2 className="h-4 w-4" />
-                            <span className="sr-only">Eliminar producto</span>
-                          </Button>
+                        <div key={prod.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end p-4 rounded-lg bg-card md:bg-secondary/30 border">
+                           <div className="md:col-span-5 space-y-1.5">
+                              <Label htmlFor={`name-${prod.id}`}>Producto</Label>
+                              <Input
+                                id={`name-${prod.id}`}
+                                placeholder="Nombre del producto"
+                                value={prod.name}
+                                onChange={(e) => handleInputChange(dayIndex, prodIndex, 'name', e.target.value)}
+                              />
+                           </div>
+                           <div className="grid grid-cols-2 gap-4 md:col-span-5">
+                             <div className="space-y-1.5">
+                               <Label htmlFor={`price-${prod.id}`}>Precio</Label>
+                               <Input
+                                 id={`price-${prod.id}`}
+                                 type="text"
+                                 inputMode="decimal"
+                                 placeholder="Precio"
+                                 value={prod.price}
+                                 onChange={(e) => handleInputChange(dayIndex, prodIndex, 'price', e.target.value)}
+                                 className="text-right"
+                               />
+                             </div>
+                              <div className="space-y-1.5">
+                                <Label htmlFor={`quantity-${prod.id}`}>Cantidad</Label>
+                                <Input
+                                  id={`quantity-${prod.id}`}
+                                  type="text"
+                                  inputMode="decimal"
+                                  placeholder="Cant."
+                                  value={prod.quantity}
+                                  onChange={(e) => handleInputChange(dayIndex, prodIndex, 'quantity', e.target.value)}
+                                  className="text-right"
+                                />
+                              </div>
+                           </div>
+                           <div className="md:col-span-2 flex justify-between items-end">
+                            <div className="text-right flex-grow space-y-1.5">
+                                <Label className="text-muted-foreground">Total</Label>
+                                <p className="text-right font-bold text-lg text-accent h-10 flex items-center justify-end">
+                                  {formatCurrency(productTotal)}
+                                </p>
+                            </div>
+                            <Button variant="ghost" size="icon" onClick={() => removeProduct(dayIndex, prod.id)} className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 ml-2">
+                                <Trash2 className="h-5 w-5" />
+                                <span className="sr-only">Eliminar producto</span>
+                            </Button>
+                           </div>
                         </div>
                       );
                     })}
                   </div>
-                  <Button variant="outline" size="sm" onClick={() => addProduct(dayIndex)} className="mt-4">
+                  <Button variant="outline" size="sm" onClick={() => addProduct(dayIndex)} className="mt-6 w-full md:w-auto">
                     <PlusCircle className="mr-2 h-4 w-4" />
                     Añadir Producto
                   </Button>
-                </AccordionContent>
-              </AccordionItem>
-            );
-          })}
-        </Accordion>
-      </CardContent>
-      <CardFooter className="flex justify-end items-center bg-primary/10 p-6 rounded-b-lg mt-4">
-        <h3 className="text-xl font-headline text-foreground mr-4">Total Semanal:</h3>
-        <span className="text-3xl font-bold font-headline text-accent transition-all duration-300">
-          {formatCurrency(weeklyTotal)}
-        </span>
-      </CardFooter>
-    </Card>
+              </TabsContent>
+            ))}
+          </Tabs>
+        </CardContent>
+        <CardFooter className="flex justify-end items-center bg-primary/10 p-6 rounded-b-lg mt-4">
+          <h3 className="text-xl font-bold text-foreground mr-4">Total Semanal:</h3>
+          <span className="text-3xl font-extrabold text-accent transition-all duration-300">
+            {formatCurrency(weeklyTotal)}
+          </span>
+        </CardFooter>
+      </Card>
+    </div>
   );
 }
