@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { format, startOfWeek, addDays, getWeekOfMonth, startOfMonth } from 'date-fns';
+import { format, startOfWeek, addDays, getWeekOfMonth } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 
@@ -161,13 +161,13 @@ export default function SalesCalculator() {
           <CardDescription className="text-base">Calcula tus ganancias semanales de forma sencilla e intuitiva.</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex justify-center md:justify-end mb-4">
+          <div className="flex justify-center md:justify-end items-center gap-4 mb-4">
              <Popover>
                <PopoverTrigger asChild>
                  <Button
                    variant={"outline"}
                    className={cn(
-                     "w-[280px] justify-start text-left font-normal",
+                     "w-[240px] justify-start text-left font-normal",
                      !selectedDate && "text-muted-foreground"
                    )}
                  >
@@ -183,11 +183,11 @@ export default function SalesCalculator() {
                    initialFocus
                    locale={es}
                  />
-                 <div className="p-2 text-center text-sm text-muted-foreground">
-                    Semana del mes: <span className="font-bold text-foreground">{weekOfMonth}</span>
-                 </div>
                </PopoverContent>
              </Popover>
+             <div className="text-sm text-muted-foreground bg-secondary/30 px-3 py-2 rounded-md">
+                Semana: <span className="font-bold text-foreground">{weekOfMonth}</span>
+             </div>
           </div>
           <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
             <TabsList className="grid w-full grid-cols-3 sm:grid-cols-4 md:grid-cols-7 mb-4 h-auto p-1.5">
@@ -284,5 +284,3 @@ export default function SalesCalculator() {
     </div>
   );
 }
-
-    
