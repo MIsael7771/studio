@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { PlusCircle, Trash2, Utensils, Calendar as CalendarIcon } from 'lucide-react';
+import { PlusCircle, Trash2, Utensils, Calendar as CalendarIcon, MinusCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -92,6 +92,14 @@ export default function SalesCalculator() {
         return;
     }
     newDays[dayIndex].products[prodIndex][field] = value;
+    setDays(newDays);
+  };
+
+  const handleQuantityChange = (dayIndex: number, prodIndex: number, amount: number) => {
+    const newDays = [...days];
+    const currentQuantity = parseFloat(newDays[dayIndex].products[prodIndex].quantity) || 0;
+    const newQuantity = Math.max(0, currentQuantity + amount);
+    newDays[dayIndex].products[prodIndex].quantity = newQuantity.toString();
     setDays(newDays);
   };
 
@@ -239,15 +247,23 @@ export default function SalesCalculator() {
                              </div>
                               <div className="space-y-1.5">
                                 <Label htmlFor={`quantity-${prod.id}`}>Cantidad</Label>
-                                <Input
-                                  id={`quantity-${prod.id}`}
-                                  type="text"
-                                  inputMode="decimal"
-                                  placeholder="Cant."
-                                  value={prod.quantity}
-                                  onChange={(e) => handleInputChange(dayIndex, prodIndex, 'quantity', e.target.value)}
-                                  className="text-right"
-                                />
+                                <div className="flex items-center gap-2">
+                                    <Button variant="outline" size="icon" className="h-10 w-10" onClick={() => handleQuantityChange(dayIndex, prodIndex, -1)}>
+                                        <MinusCircle className="h-5 w-5" />
+                                    </Button>
+                                    <Input
+                                      id={`quantity-${prod.id}`}
+                                      type="text"
+                                      inputMode="decimal"
+                                      placeholder="Cant."
+                                      value={prod.quantity}
+                                      onChange={(e) => handleInputChange(dayIndex, prodIndex, 'quantity', e.target.value)}
+                                      className="text-right"
+                                    />
+                                    <Button variant="outline" size="icon" className="h-10 w-10" onClick={() => handleQuantityChange(dayIndex, prodIndex, 1)}>
+                                        <PlusCircle className="h-5 w-5" />
+                                    </Button>
+                                </div>
                               </div>
                            </div>
                            <div className="md:col-span-2 flex justify-between items-end">
