@@ -223,13 +223,14 @@ export default function SalesCalculator() {
                       const productTotal = (parseFloat(prod.price) || 0) * (parseFloat(prod.quantity) || 0);
                       return (
                         <div key={prod.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end p-4 rounded-lg bg-card md:bg-secondary/30 border">
-                           <div className="md:col-span-4 space-y-1.5">
+                           <div className="md:col-span-3 space-y-1.5">
                               <Label htmlFor={`name-${prod.id}`}>Producto</Label>
                               <Input
                                 id={`name-${prod.id}`}
                                 placeholder="Nombre del producto"
                                 value={prod.name}
                                 onChange={(e) => handleInputChange(dayIndex, prodIndex, 'name', e.target.value)}
+                                className="h-12"
                               />
                            </div>
                            <div className="md:col-span-2 space-y-1.5">
@@ -264,7 +265,7 @@ export default function SalesCalculator() {
                                   </Button>
                               </div>
                            </div>
-                           <div className="md:col-span-2 flex justify-between items-end">
+                           <div className="md:col-span-3 flex justify-between items-end">
                             <div className="text-right flex-grow space-y-1.5">
                                 <Label className="text-muted-foreground">Total</Label>
                                 <p className="text-right font-bold text-lg text-accent h-12 flex items-center justify-end">
