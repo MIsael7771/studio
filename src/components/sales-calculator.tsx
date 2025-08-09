@@ -6,9 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { PlusCircle, Trash2, Utensils } from 'lucide-react';
+import { PlusCircle, Trash2, Utensils, Calendar as CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+
 
 interface Product {
   id: string;
@@ -23,11 +28,15 @@ interface DaySales {
 }
 
 const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+const dayNameToIndex: { [key: string]: number } = { 'Domingo': 0, 'Lunes': 1, 'Martes': 2, 'Miércoles': 3, 'Jueves': 4, 'Viernes': 5, 'Sábado': 6 };
+
 
 export default function SalesCalculator() {
   const [days, setDays] = useState<DaySales[]>([]);
   const [isMounted, setIsMounted] = useState(false);
   const [activeTab, setActiveTab] = useState(daysOfWeek[0]);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+
 
   useEffect(() => {
     setIsMounted(true);
@@ -51,8 +60,7 @@ export default function SalesCalculator() {
       setDays(initialClientDays);
     }
 
-    const today = daysOfWeek[new Date().getDay() -1] || 'Domingo';
-    setActiveTab(today);
+    handleDateSelect(new Date());
   }, []);
 
   useEffect(() => {
@@ -60,6 +68,16 @@ export default function SalesCalculator() {
       localStorage.setItem('salesData-VentaClara', JSON.stringify(days));
     }
   }, [days, isMounted]);
+
+  const handleDateSelect = (date: Date | undefined) => {
+    if (!date) return;
+    setSelectedDate(date);
+    // JS `getDay` is 0 (Sun) - 6 (Sat). We want 0 (Mon) - 6 (Sun).
+    const dayIndex = (date.getDay() + 6) % 7;
+    const dayName = daysOfWeek[dayIndex];
+    setActiveTab(dayName);
+  };
+
 
   const handleInputChange = (dayIndex: number, prodIndex: number, field: keyof Omit<Product, 'id'>, value: string) => {
     const newDays = [...days];
@@ -130,6 +148,31 @@ export default function SalesCalculator() {
           <CardDescription className="text-base">Calcula tus ganancias semanales de forma sencilla e intuitiva.</CardDescription>
         </CardHeader>
         <CardContent>
+          <div className="flex justify-center md:justify-end mb-4">
+             <Popover>
+               <PopoverTrigger asChild>
+                 <Button
+                   variant={"outline"}
+                   className={cn(
+                     "w-[280px] justify-start text-left font-normal",
+                     !selectedDate && "text-muted-foreground"
+                   )}
+                 >
+                   <CalendarIcon className="mr-2 h-4 w-4" />
+                   {selectedDate ? format(selectedDate, "PPP", { locale: es }) : <span>Elige una fecha</span>}
+                 </Button>
+               </PopoverTrigger>
+               <PopoverContent className="w-auto p-0">
+                 <Calendar
+                   mode="single"
+                   selected={selectedDate}
+                   onSelect={handleDateSelect}
+                   initialFocus
+                   locale={es}
+                 />
+               </PopoverContent>
+             </Popover>
+          </div>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-3 sm:grid-cols-4 md:grid-cols-7 mb-4 h-auto p-1.5">
               {days.map((day) => {
