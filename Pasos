@@ -1,0 +1,13 @@
+Pruebas tus cambios localmente usando el servidor de desarrollo:
+npm run dev
+
+Abres http://localhost:3000 en tu navegador y
+te aseguras de que el nuevo título se ve bien. 
+Una vez que estás contento, detienes el servidor de desarrollo con Ctrl+C
+
+✅ 1. git status (Reviso)
+✅ 2. git add . (Preparo)
+✅ 3. git commit -m "describo mi cambio" (Confirmo)
+✅ 4. git push origin main (Subo a GitHub)
+✅ 5. npm run build (Empaqueto para producción)
+✅ 6. firebase deploy (Publico en la web)
