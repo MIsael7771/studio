@@ -41,7 +41,7 @@ export default function SalesCalculator() {
   useEffect(() => {
     setIsMounted(true);
     try {
-      const savedData = localStorage.getItem('salesData-ElJugos');
+      const savedData = localStorage.getItem('salesData-CalculadoraM');
       if (savedData) {
         setDays(JSON.parse(savedData));
       } else {
@@ -65,7 +65,7 @@ export default function SalesCalculator() {
 
   useEffect(() => {
     if (isMounted && days.length > 0) {
-      localStorage.setItem('salesData-ElJugos', JSON.stringify(days));
+      localStorage.setItem('salesData-CalculadoraM', JSON.stringify(days));
     }
   }, [days, isMounted]);
 
@@ -164,7 +164,7 @@ export default function SalesCalculator() {
              <div className="bg-primary/10 p-2 rounded-lg">
                 <Utensils className="h-8 w-8 text-primary" />
              </div>
-             <CardTitle className="text-4xl font-extrabold text-primary tracking-tight">EL JUGOS</CardTitle>
+             <CardTitle className="text-4xl font-extrabold text-primary tracking-tight">Calculadora M</CardTitle>
           </div>
           <CardDescription className="text-base">Calcula tus Ganancias</CardDescription>
         </CardHeader>
