@@ -1,7 +1,7 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  output: 'export', // <--- export Firebase
+  output: 'export', // <-- TU CAMBIO IMPORTANTE
   /* config options here */
   typescript: {
     ignoreBuildErrors: true,
