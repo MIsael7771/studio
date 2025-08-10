@@ -1,4 +1,4 @@
-import { initializeApp, getApps } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
@@ -13,13 +13,7 @@ const firebaseConfig = {
 };
 
 // Inicializa Firebase, pero solo si no ha sido inicializado antes
-// Esto evita errores en Next.js durante el desarrollo
-let app;
-if (!getApps().length) {
-  app = initializeApp(firebaseConfig);
-} else {
-  app = getApps()[0];
-}
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
 // Exporta los servicios que necesitas para usarlos en tu app
 export const auth = getAuth(app);
